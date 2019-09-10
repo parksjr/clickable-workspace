@@ -1,0 +1,32 @@
+Vagrant.configure(2) do |config|
+  config.vm.box = "ubuntu/bionic64"
+  # sync folders (clyde-cli must exist next to clydejs-express)
+  config.vm.synced_folder "apps", "/home/vagrant/apps"
+
+  # customize for usb forwarding
+  # see README for adding your device if not listed here already
+  config.vm.provider "virtualbox" do |vb|
+    vb.customize ["modifyvm", :id, "--usb", "on"]
+    vb.customize ['usbfilter', 'add', '0', '--target', :id, '--name', 'hammerhead', '--vendorid', '0x18d1', '--productid', '0x4ee2']
+    vb.customize ['usbfilter', 'add', '0', '--target', :id, '--name', 'bacon', '--vendorid', ' 0x05c6', '--productid', '0x6769']
+  end
+
+  config.vm.provision "shell",
+    inline: "apt-get update"
+
+  config.vm.provision "shell",
+  path: "./provision_scripts/docker.sh"
+
+  config.vm.provision "shell",
+  path: "./provision_scripts/python.sh"
+
+  config.vm.provision "shell",
+  path: "./provision_scripts/adb.sh"
+
+  config.vm.provision "shell",
+  path: "./provision_scripts/clickable.sh"
+
+  config.vm.provision "shell", 
+  path: "./provision_scripts/on_vagrantup.sh",
+  run: "always"
+end
