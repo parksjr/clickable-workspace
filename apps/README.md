@@ -1,0 +1,1 @@
+each app should be part of its own github repo and ignored by the clickable-dev repo.
